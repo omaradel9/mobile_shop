@@ -78,6 +78,8 @@ class PosReportGenerator(models.Model):
             is_managed = True
         else:
             is_managed = False
+        _logger.exception('==============is_managed %s', is_managed)
+
         return {
             'name': "PoS Orders",
             'type': 'ir.actions.client',

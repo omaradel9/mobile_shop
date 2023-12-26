@@ -101,13 +101,13 @@
     <t t-name="PosOrderTable">
         <!--        <t t-esc="order.report_type"/>-->
         <div t-if="order.report_type == 'report_by_order'">
-            <div class="table_main_view" groups="mobile_store.group_Store_manager">
-                 <table width="50%" class="mt-2 table table-bordered border-dark">
+            <div class="table_main_view">
+                <table width="50%" class="mt-2 table table-bordered border-dark">
                     <thead>
                         <tr>
                             <th style="text-align:center;" class="mon_fld">Total Amount</th>
-                            <th t-if="is_managed == True" style="text-align:center;" class="mon_fld">Cost</th>
-                            <th t-if="is_managed == True" style="text-align:center;" class="mon_fld">Net Amount</th>
+                            <th t-if="is_managed == true" style="text-align:center;" class="mon_fld">Cost</th>
+                            <th t-if="is_managed == true" style="text-align:center;" class="mon_fld">Net Amount</th>
                         </tr>
                     </thead>
 
@@ -115,8 +115,8 @@
                         <t t-foreach="main_lines" t-as="pos_main_report">
 
                             <td class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['amount']"/></span></td>
-                            <td t-if="is_managed == True" class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['cost']"/></span></td>
-                            <td t-if="is_managed == True" class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['amount']-pos_main_report['cost']"/></span></td>
+                            <td t-if="is_managed == true" class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['cost']"/></span></td>
+                            <td t-if="is_managed == true" class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['amount']-pos_main_report['cost']"/></span></td>
                         </t>
                     </tbody>
                 </table>
@@ -124,14 +124,15 @@
 
                     <thead>
                         <tr class="table_pos_head">
+                            <th>PoS</th>
                             <th class="mon_fld">Order</th>
-                            <th class="mon_fld">Product Name</th>
                             <th class="mon_fld">Date Order</th>
                             <th class="mon_fld">Customer</th>
                             <th class="mon_fld">Salesman</th>
                             <th class="mon_fld">Total Qty</th>
                             <th class="mon_fld">Cost</th>
                             <th class="mon_fld">Amount Total</th>
+
                             <th class="mon_fld">Note</th>
                         </tr>
                     </thead>
@@ -143,10 +144,10 @@
 
                                 t-att-data-account-id="pos_report['id']"
                                 t-attf-data-target=".a{{pos_report['id']}}">
-                   <!--                <td>
+                                <td>
                                     <t t-if="pos_report['id']">
                                         <div class="dropdown dropdown-toggle">
-                                         <a data-toggle="dropdown" href="#">
+<!--                                            <a data-toggle="dropdown" href="#">-->
                                             <a data-bs-toggle="dropdown" href="#">
                                                 <span class="caret"/>
                                                 <span>
@@ -163,16 +164,10 @@
                                             </ul>
                                         </div>
                                     </t>
-                                </td>-->
-
-                                <td style="text-align:center;">
-                                    <span>
-                                        <t t-esc="pos_report['session']"/>
-                                    </span>
                                 </td>
                                 <td style="text-align:center;">
                                     <span>
-                                        <t t-esc="pos_report['full_product_name']"/>
+                                        <t t-esc="pos_report['session']"/>
                                     </span>
                                 </td>
                                 <td style="text-align:center;">
