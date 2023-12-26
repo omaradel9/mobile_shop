@@ -1,6 +1,5 @@
 from odoo import api, fields, models, _
-import logging
-_logger = logging.getLogger(__name__)
+
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
     
@@ -16,9 +15,6 @@ class PosOrderLine(models.Model):
             pol_count = pol.search_count([('product_id', '=', rec.product_id.id)])
             on_hand_qty = rec.product_id.qty_available
             cost_line = sum(line.price_unit for line in pol_find)
-            _logger.exception('==============cost_line %s', cost_line)
-            _logger.exception('============== pol_count %s',pol_count )
-            # _logger.exception('============== %s', )
             if pol_count:
                 cost = cost_line / pol_count
                 rec.product_cost = cost

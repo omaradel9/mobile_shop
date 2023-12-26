@@ -105,7 +105,6 @@ odoo.define('pos_report_generator.pos_report', function(require) {
 						main_lines: datas['report_main_line'],
 						is_managed: datas['is_managed']
 
-
 					}));
 			})
 		},
