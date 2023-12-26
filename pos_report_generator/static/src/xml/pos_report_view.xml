@@ -102,12 +102,12 @@
         <!--        <t t-esc="order.report_type"/>-->
         <div t-if="order.report_type == 'report_by_order'">
             <div class="table_main_view" groups="mobile_store.group_Store_manager">
-                <table width="50%" class="mt-2 table table-bordered border-dark" >
+                 <table width="50%" class="mt-2 table table-bordered border-dark">
                     <thead>
                         <tr>
                             <th style="text-align:center;" class="mon_fld">Total Amount</th>
-                            <th style="text-align:center;" class="mon_fld">Cost</th>
-                            <th style="text-align:center;" class="mon_fld">Net Amount</th>
+                            <th t-if="is_managed == True" style="text-align:center;" class="mon_fld">Cost</th>
+                            <th t-if="is_managed == True" style="text-align:center;" class="mon_fld">Net Amount</th>
                         </tr>
                     </thead>
 
@@ -115,8 +115,8 @@
                         <t t-foreach="main_lines" t-as="pos_main_report">
 
                             <td class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['amount']"/></span></td>
-                            <td class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['cost']"/></span></td>
-                            <td class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['amount']-pos_main_report['cost']"/></span></td>
+                            <td t-if="is_managed == True" class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['cost']"/></span></td>
+                            <td t-if="is_managed == True" class="h4" style="text-align:center;"><span><t t-esc="pos_main_report['amount']-pos_main_report['cost']"/></span></td>
                         </t>
                     </tbody>
                 </table>

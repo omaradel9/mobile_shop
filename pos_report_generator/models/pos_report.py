@@ -21,7 +21,8 @@
 
 from odoo import models, fields, api
 from datetime import datetime
-
+import logging
+_logger = logging.getLogger(__name__)
 import io
 import json
 
@@ -71,7 +72,12 @@ class PosReportGenerator(models.Model):
         report = self._get_report_values(data)
         lines = self._get_report_values(data).get('POS')
         main_line = self._get_report_values(data).get('pos_main')
+        user = self.env.user
 
+        if user.has_group('mobile_shop.group_Store_manager'):
+            is_managed = True
+        else:
+            is_managed = False
         return {
             'name': "PoS Orders",
             'type': 'ir.actions.client',
@@ -80,6 +86,7 @@ class PosReportGenerator(models.Model):
             'filters': filters,
             'report_lines': lines,
             'report_main_line': main_line,
+            'is_managed': is_managed,
         }
 
     def get_filter(self, option):
@@ -140,15 +147,14 @@ class PosReportGenerator(models.Model):
                     sum(l.qty),
                     sum(l.product_cost) as cost ,
                     l.id as id,
-                    l.full_product_name,
                     (SELECT res_partner.name as salesman FROM res_partner WHERE res_partner.id = res_users.partner_id)
                     from pos_order_line as l 
                     left join pos_session on l.session_ids = pos_session.id
                     left join res_partner on l.partner_ids = res_partner.id
                     left join res_users on l.user_ids = res_users.id'''
-            term = ' Where  l.pos_categ_id = 2'
+            term = ''
             if data.get('date_from'):
-                query += " Where l.pos_categ_id = 2 AND (l.date_orders >= '%s') " % data.get('date_from').strftime('%Y-%m-%d 00:00:00')
+                query += " Where (l.date_orders >= '%s') " % data.get('date_from').strftime('%Y-%m-%d 00:00:01')
                 term = 'AND '
             if data.get('date_to'):
                 if not data.get('date_from'):
@@ -157,6 +163,7 @@ class PosReportGenerator(models.Model):
             if  not data.get('date_from') and  not data.get('date_to'):
                 query += term 
             query += " group by l.user_ids,res_users.partner_id,res_partner.name,l.partner_ids,l.date_orders,pos_session.name,l.session_ids,l.name,l.price_subtotal,l.id"
+
             self._cr.execute(query)
             report_by_order = self._cr.dictfetchall()
             report_sub_lines.append(report_by_order)
@@ -269,17 +276,23 @@ class PosReportGenerator(models.Model):
         report_main_lines = []
         if data.get('report_type') == 'report_by_order':
             query = '''
-            select count(pos_order_line.id) as order,sum(pos_order_line.price_subtotal_incl) as amount,sum(pos_order_line.product_cost) as cost
-            from pos_order as l
-            left join pos_order_line on l.id = pos_order_line.order_id and pos_order_line.pos_categ_id = 2 
+            select
+            sum(l.price_subtotal_incl) as amount,
+            sum(CASE WHEN l.qty <1 THEN  -l.product_cost
+             WHEN l.qty >1 THEN  l.product_cost
+             ELSE
+              l.product_cost
+            END
+             ) as cost
+            from pos_order_line as l
             
             '''
             term = 'Where '
             if data.get('date_from'):
-                query += "Where l.date_order >= '%s' " % data.get('date_from').strftime('%Y-%m-%d 00:00:00')
+                query += "Where l.date_orders >= '%s' " % data.get('date_from').strftime('%Y-%m-%d 00:00:00')
                 term = 'AND '
             if data.get('date_to'):
-                query += term + "l.date_order <= '%s' " % data.get('date_to').strftime('%Y-%m-%d 23:59:59')
+                query += term + "l.date_orders <= '%s' " % data.get('date_to').strftime('%Y-%m-%d 23:59:59')
             self._cr.execute(query)
             
             report_by_order = self._cr.dictfetchall()
