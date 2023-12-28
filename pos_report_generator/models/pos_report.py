@@ -163,7 +163,7 @@ class PosReportGenerator(models.Model):
                 query += term + "(l.date_orders <= '%s') " % data.get('date_to').strftime('%Y-%m-%d 23:59:59')
             if  not data.get('date_from') and  not data.get('date_to'):
                 query += term 
-            query += " group by l.user_ids,res_users.partner_id,res_partner.name,l.partner_ids,l.date_orders,pos_session.name,l.session_ids,l.name,l.price_subtotal,l.id"
+            query += " oredr by l.date_orders desc group by l.user_ids,res_users.partner_id,res_partner.name,l.partner_ids,l.date_orders,pos_session.name,l.session_ids,l.name,l.price_subtotal,l.id"
             self._cr.execute(query)
             report_by_order = self._cr.dictfetchall()
             report_sub_lines.append(report_by_order)
