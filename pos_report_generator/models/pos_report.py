@@ -153,9 +153,9 @@ class PosReportGenerator(models.Model):
                     left join pos_session on l.session_ids = pos_session.id
                     left join res_partner on l.partner_ids = res_partner.id
                     left join res_users on l.user_ids = res_users.id'''
-            term = ' Where  l.pos_categ_id = 2'
+            term = ''
             if data.get('date_from'):
-                query += " Where l.pos_categ_id = 2 AND (l.date_orders >= '%s') " % data.get('date_from').strftime('%Y-%m-%d 00:00:00')
+                query += " Where (l.date_orders >= '%s') " % data.get('date_from').strftime('%Y-%m-%d 00:00:00')
                 term = 'AND '
             if data.get('date_to'):
                 if not data.get('date_from'):
@@ -278,7 +278,7 @@ class PosReportGenerator(models.Model):
             query = '''
             select count(pos_order_line.id) as order,sum(pos_order_line.price_subtotal_incl) as amount,sum(pos_order_line.product_cost) as cost
             from pos_order as l
-            left join pos_order_line on l.id = pos_order_line.order_id and pos_order_line.pos_categ_id = 2 
+            left join pos_order_line on l.id = pos_order_line.order_id
             
             '''
             term = 'Where '

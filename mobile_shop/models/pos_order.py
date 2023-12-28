@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
-
+import logging
+_log = logging.getLogger(__name__)
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
     
@@ -56,3 +57,20 @@ class PosOrderLine(models.Model):
         readonly=True,
         store=True
     )
+    
+    def calculate_product_cost(self):
+        # return True
+        posl = self.env['pos.order.line'].search([])
+        for rec in posl:
+            pol = rec.env['purchase.order.line']
+            pol_find = pol.search([('product_id', '=', rec.product_id.id)])
+            pol_count = pol.search_count([('product_id', '=', rec.product_id.id)])
+            cost_line = sum(line.price_unit for line in pol_find)
+            if pol_count:
+                cost = cost_line / pol_count
+                rec.product_cost = cost
+                _log.exception("==============================calculate_product_cost")
+
+            else:
+                rec.product_cost = rec.product_id.standard_price
+                _log.exception("==============================calculate_product_cost")

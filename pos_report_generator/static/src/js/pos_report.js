@@ -14,6 +14,7 @@ odoo.define('pos_report_generator.pos_report', function(require) {
 		template: 'PosReport',
 		events: {
 			'click #apply_filter': 'apply_filter',
+			'click #calc_cost': 'calc_cost',
 			'click #pdf': 'print_pdf',
 			'click #xlsx': 'print_xlsx',
 			'click .view_pos_order': 'button_view_order',
@@ -108,7 +109,23 @@ odoo.define('pos_report_generator.pos_report', function(require) {
 					}));
 			})
 		},
+		calc_cost: function(event) {
+			event.preventDefault();
 
+			var self = this;
+			self._rpc({
+				model: "pos.order.line",
+				method: "calculate_product_cost",
+				args: [
+					[self.wizard_id]
+				],
+			}).then(function(data) {
+				console.log("omar adel omar mohamed");
+                self.apply_filter();
+
+			})
+
+		},
 		print_pdf: function(e) {
 			e.preventDefault();
 			var self = this;

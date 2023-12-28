@@ -92,6 +92,14 @@
                             style="top: 0px; height: 42px; color: white; background-color: #7c7bad; border-color: #7c7bad; width: 100px;">
                         Apply
                     </button>
+
+                </div>
+                <div style="">
+
+                    <button type="button" id="calc_cost" class="btn btn-primary"
+                            style="margin-left:10px;top: 0px; height: 42px; color: white; background-color: #7c7bad; border-color: #7c7bad; width: 150px;">
+                        Calculate Cost
+                    </button>
                 </div>
                 
             </div>
@@ -99,7 +107,6 @@
     </t>
 
     <t t-name="PosOrderTable">
-        <!--        <t t-esc="order.report_type"/>-->
         <div t-if="order.report_type == 'report_by_order'">
             <div class="table_main_view" groups="mobile_store.group_Store_manager">
                  <table width="50%" class="mt-2 table table-bordered border-dark">
@@ -137,34 +144,8 @@
                     </thead>
 
                     <tbody>
-                        <!--                        <t t-if="order['report_type']='report_by_order'">-->
                         <t t-foreach="report_lines" t-as="pos_report">
-                            <tr style="border: 1.5px solid black;" class="ps-line"
-
-                                t-att-data-account-id="pos_report['id']"
-                                t-attf-data-target=".a{{pos_report['id']}}">
-                   <!--                <td>
-                                    <t t-if="pos_report['id']">
-                                        <div class="dropdown dropdown-toggle">
-                                         <a data-toggle="dropdown" href="#">
-                                            <a data-bs-toggle="dropdown" href="#">
-                                                <span class="caret"/>
-                                                <span>
-                                                    <t t-esc="pos_report['shop']"/>
-                                                </span>
-                                            </a>
-                                            <ul class="dropdown-menu pos-dropdown" role="menu" aria-labelledby="dropdownMenu">
-                                                <li>
-                                                    <a class="view_pos_order" tabindex="-1" href="#"
-                                                       t-att-id="pos_report['id']">
-                                                        View PoS Order
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </t>
-                                </td>-->
-
+                            <tr style="border: 1.5px solid black;" class="ps-line" t-att-data-account-id="pos_report['id']" t-attf-data-target=".a{{pos_report['id']}}">
                                 <td style="text-align:center;">
                                     <span>
                                         <t t-esc="pos_report['session']"/>
@@ -196,9 +177,18 @@
                                     </span>
                                 </td>
                                 <td style="text-align:center;">
-                                    <span>
-                                        <t t-esc="pos_report['cost']"/>
-                                    </span>
+                                        <t t-if="is_managed == false" >
+
+                                        <t t-if="pos_report['cost'] > 1 " >
+                                            <span>يوجد سعر تكلفه</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span>لا يوجد سعر تكلفه</span>
+                                        </t>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-esc="pos_report['cost']"/>
+                                        </t>
                                 </td>
                                 <td style="text-align:center;">
                                     <span>
@@ -213,9 +203,6 @@
                                 </td>
                             </tr>
                         </t>
-                        <!--                        </t>-->
-                        <!--                        Report for order detail-->
-
                     </tbody>
                 </table>
                 

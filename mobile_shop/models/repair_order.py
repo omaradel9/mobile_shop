@@ -1,4 +1,6 @@
 from odoo import api, fields, models, _
+from datetime import datetime, date, timedelta
+
 class Repair(models.Model):
     _inherit = 'repair.order'
     
@@ -11,7 +13,7 @@ class Repair(models.Model):
     
     product_id = fields.Many2one(
         domain="[('type', '=', 'consu')]")
-    schedule_date = fields.Date(default=fields.Datetime.now())
+    schedule_date = fields.Date(default=date.today())
 class Repair(models.Model):
     _inherit = 'repair.line'
     
@@ -41,7 +43,7 @@ class ExitsTransactions(models.Model):
 
     employee_id = fields.Many2one("hr.employee", string="Employee", ondelete='cascade')
     vendor_name = fields.Many2one(string="المورد",comodel_name="res.partner",domain="[('supplier_rank', '=', 1),('repair_vendor', '=', True)]")      
-    trans_date = fields.Datetime(string="تاريخ العملية", default=fields.Datetime.now(), readonly=True)
+    trans_date = fields.Datetime(string="تاريخ العملية", default=datetime.now(), readonly=True)
     amount = fields.Float(string="القيمة", )
     trans_type = fields.Selection(
         string="نوع العملية",

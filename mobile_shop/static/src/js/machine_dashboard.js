@@ -48,8 +48,7 @@ odoo.define('mobile_shop.MachineDashboard', function (require) {
                 model: "money.machine",
                 method: "get_machine_amount",
                 args: [],
-            })
-                .then(function (result) {
+            }).then(function (result) {
                     for (const [key, value] of Object.entries(result)) {
                         console.log("=============result key : "+key+" value :"+value)
                         $("#"+key).append("<span>" + value + "</span>");
